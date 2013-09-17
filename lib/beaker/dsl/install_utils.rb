@@ -340,6 +340,13 @@ module Beaker
       def upgrade_pe path 
         version = Options::PEVersionScraper.load_pe_version(path, options[:pe_version_file])
         version_win = Options::PEVersionScraper.load_pe_version(path, options[:pe_version_file_win])
+        hosts.each do |host|
+          if host['platform'] =~ /windows/
+            host['pe_ver'] = version_win
+          else
+            host['pe_ver'] = version
+          end
+        end
         pre_30 = version_is_less(version, '3.0')
         if pre_30
           do_install(hosts, {:type => :upgrade, :pe_dir => path, :pe_ver => version, :pe_ver_win => version_win, :installer => 'puppet-enterprise-upgrader'})
