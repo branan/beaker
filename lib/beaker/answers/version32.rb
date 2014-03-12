@@ -14,6 +14,8 @@ module Beaker
           the_answers[dashboard.name][:q_puppetmaster_certname] = master_certname
         end
 
+        the_answers[master.name][:q_tarball_server] = 'http://neptune.delivery.puppetlabs.net/3.2/ci-ready'
+
         if options[:type] == :upgrade && dashboard != database
           # In a split configuration, there is no way for the upgrader
           # to know how much disk space is available for the database
