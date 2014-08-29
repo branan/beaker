@@ -13,26 +13,25 @@ module Beaker
     #
     # @param [String] version Puppet Enterprise version to generate answer data for
     # @param [Array<Beaker::Host>] hosts An array of host objects.
-    # @param [String] master_certname Hostname of the puppet master.
     # @param [Hash] options options for answer files
     # @option options [Symbol] :type Should be one of :upgrade or :install.
     # @return [Hash] A hash (keyed from hosts) containing hashes of answer file
     #   data.
-    def self.answers(version, hosts, master_certname, options)
+    def self.answers(version, hosts, options)
 
       case version
       when /\A3\.4/
-        Version34.answers(hosts, master_certname, options)
+        Version34.answers(hosts, options)
       when /\A3\.[2-3]/
-        Version32.answers(hosts, master_certname, options)
+        Version32.answers(hosts, options)
       when /\A3\.1/
-        Version30.answers(hosts, master_certname, options)
+        Version30.answers(hosts, options)
       when /\A3\.0/
-        Version30.answers(hosts, master_certname, options)
+        Version30.answers(hosts, options)
       when /\A2\.8/
-        Version28.answers(hosts, master_certname, options)
+        Version28.answers(hosts, options)
       when /\A2\.0/
-        Version20.answers(hosts, master_certname, options)
+        Version20.answers(hosts, options)
       else
         raise NotImplementedError, "Don't know how to generate answers for #{version}"
       end

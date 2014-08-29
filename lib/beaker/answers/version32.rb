@@ -3,15 +3,15 @@ require 'beaker/answers/version30'
 module Beaker
   module Answers
     module Version32
-      def self.answers(hosts, master_certname, options)
+      def self.answers(hosts, options)
         dashboard = only_host_with_role(hosts, 'dashboard')
         database = only_host_with_role(hosts, 'database')
         master = only_host_with_role(hosts, 'master')
 
-        the_answers = Version30.answers(hosts, master_certname, options)
+        the_answers = Version30.answers(hosts, options)
         if dashboard != master
           # in 3.2, dashboard needs the master certname
-          the_answers[dashboard.name][:q_puppetmaster_certname] = master_certname
+          the_answers[dashboard.name][:q_puppetmaster_certname] = master
         end
 
         if options[:type] == :upgrade && dashboard != database
