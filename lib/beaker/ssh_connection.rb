@@ -166,12 +166,16 @@ module Beaker
     def scp_to source, target, options = {}, dry_run = false
       return if dry_run
 
-      options[:recursive]  = File.directory?(source)
-      options[:chunk_size] = options[:chunk_size] || 16384
+      # Get a recursive local copy of the options hash
+      local_opts = Marshal.load(Marshal.dump(options))
+      if local_opts[:recursive].nil?
+        local_opts[:recursive] = File.directory?(source)
+      end
+      local_opts[:chunk_size] ||= 16384
 
       result = Result.new(@hostname, [source, target])
       result.stdout = "\n"
-      @ssh.scp.upload! source, target, options do |ch, name, sent, total|
+      @ssh.scp.upload! source, target, local_opts do |ch, name, sent, total|
         result.stdout << "\tcopying %s: %10d/%d\n" % [name, sent, total]
       end
 
@@ -188,12 +192,16 @@ module Beaker
     def scp_from source, target, options = {}, dry_run = false
       return if dry_run
 
-      options[:recursive] = true
-      options[:chunk_size] = options[:chunk_size] || 16384
+      # Get a recursive local copy of the options hash
+      local_opts = Marshal.load(Marshal.dump(options))
+      if local_opts[:recursive].nil?
+        local_opts[:recursive] = true
+      end
+      local_opts[:chunk_size] ||= 16384
 
       result = Result.new(@hostname, [source, target])
       result.stdout = "\n"
-      @ssh.scp.download! source, target, options do |ch, name, sent, total|
+      @ssh.scp.download! source, target, local_opts do |ch, name, sent, total|
         result.stdout << "\tcopying %s: %10d/%d\n" % [name, sent, total]
       end
 
